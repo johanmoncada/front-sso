@@ -11,6 +11,7 @@ import {
   ValidateResponse,
   LoginType,
 } from '../interfaces/login';
+import { ApiConstants } from '@shared/constants';
 
 @Injectable({
   providedIn: 'root',
@@ -37,7 +38,7 @@ export class AuthService {
   loginV1(credentials: LoginV1Request): Observable<LoginResponse> {
     console.log('Attempting login with credentials:', credentials);
     return this.http
-      .post<LoginResponse>('/v1/api/auth/login', credentials)
+      .post<LoginResponse>(`${ApiConstants.BASE_URL}${ApiConstants.LOGIN_V1}`, credentials)
       .pipe(tap((response) => this.handleLoginSuccess(response)));
   }
 
@@ -46,7 +47,7 @@ export class AuthService {
    */
   loginV2(credentials: LoginV2Request): Observable<LoginResponse> {
     return this.http
-      .post<LoginResponse>('/v2/api/auth/login', credentials)
+      .post<LoginResponse>(`${ApiConstants.BASE_URL}${ApiConstants.LOGIN_V2}`, credentials)
       .pipe(tap((response) => this.handleLoginSuccess(response)));
   }
 
@@ -55,7 +56,7 @@ export class AuthService {
    */
   loginV3(credentials: LoginV3Request): Observable<LoginResponse> {
     return this.http
-      .post<LoginResponse>('/v3/api/auth/login', credentials)
+      .post<LoginResponse>(`${ApiConstants.BASE_URL}${ApiConstants.LOGIN_V3}`, credentials)
       .pipe(tap((response) => this.handleLoginSuccess(response)));
   }
 
@@ -83,21 +84,23 @@ export class AuthService {
     if (!token) {
       throw new Error('No token available');
     }
-    return this.http.post<ValidateResponse>('/v1/api/auth/validate', { token });
+    return this.http.post<ValidateResponse>(`${ApiConstants.BASE_URL}${ApiConstants.VALIDATE_V1}`, {
+      token,
+    });
   }
 
   /**
    * Validate token (v2) - sends token in Authorization header
    */
   validateTokenV2(): Observable<ValidateResponse> {
-    return this.http.post<ValidateResponse>('/v2/api/auth/validate', {});
+    return this.http.post<ValidateResponse>(`${ApiConstants.BASE_URL}${ApiConstants.LOGIN_V2}`, {});
   }
 
   /**
    * Send OTP via email
    */
   sendOtpEmail(email: string): Observable<any> {
-    return this.http.post('/v1/api/auth/otp-email', {
+    return this.http.post(`${ApiConstants.BASE_URL}${ApiConstants.SEND_OTP}`, {
       channel: 'email',
       email: email,
     });
@@ -107,15 +110,15 @@ export class AuthService {
    * Get auth info for different versions
    */
   getAuthInfoV1(): Observable<any> {
-    return this.http.get('/v1/api/auth');
+    return this.http.get(`${ApiConstants.BASE_URL}${ApiConstants.LOGIN_V1}`);
   }
 
   getAuthInfoV2(): Observable<any> {
-    return this.http.get('/v2/api/auth');
+    return this.http.get(`${ApiConstants.BASE_URL}${ApiConstants.LOGIN_V2}`);
   }
 
   getAuthInfoV3(): Observable<any> {
-    return this.http.get('/v3/api/auth');
+    return this.http.get(`${ApiConstants.BASE_URL}${ApiConstants.LOGIN_V3}`);
   }
 
   /**
