@@ -10,23 +10,10 @@ export const authGuard: CanActivateFn = () => {
   if (authService.isAuthenticated()) {
     return true;
   } else {
+    // Mejor presentación usando confirm dialog
+    window.confirm(
+      '⚠️ Acceso denegado.\n\nNo está autorizado para acceder a esta página.\nPor favor, inicie sesión.'
+    );
     return router.createUrlTree(['/login']);
   }
 };
-
-// Legacy class-based guard (deprecated in Angular 20)
-@Injectable({
-  providedIn: 'root',
-})
-export class AuthGuard {
-  constructor(private authService: AuthService, private router: Router) {}
-
-  canActivate(): boolean {
-    if (this.authService.isAuthenticated()) {
-      return true;
-    } else {
-      this.router.navigate(['/login']);
-      return false;
-    }
-  }
-}

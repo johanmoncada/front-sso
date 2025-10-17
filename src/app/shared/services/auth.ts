@@ -93,7 +93,10 @@ export class AuthService {
    * Validate token (v2) - sends token in Authorization header
    */
   validateTokenV2(): Observable<ValidateResponse> {
-    return this.http.post<ValidateResponse>(`${ApiConstants.BASE_URL}${ApiConstants.LOGIN_V2}`, {});
+    return this.http.post<ValidateResponse>(
+      `${ApiConstants.BASE_URL}${ApiConstants.VALIDATE_V2}`,
+      {}
+    );
   }
 
   /**
