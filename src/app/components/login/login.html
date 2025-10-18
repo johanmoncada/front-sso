@@ -1,0 +1,112 @@
+<div class="login-container">
+  <h2>Multi-Login System</h2>
+
+  <!-- Login Type Selector -->
+  <div class="login-type-selector">
+    @for (type of loginTypes; track type) {
+    <button [class.active]="selectedLoginType() === type" (click)="selectLoginType(type)">
+      {{ getLoginTypeLabel(type) }}
+    </button>
+    }
+  </div>
+
+  <!-- Login Forms -->
+  <div class="login-forms">
+    <!-- Document Login (v1) -->
+    @if (selectedLoginType() === 'document') {
+    <form (ngSubmit)="onLogin()" #loginForm="ngForm">
+      <h3>Login with Document</h3>
+      <div class="form-group">
+        <input
+          type="text"
+          [(ngModel)]="documentNumber"
+          name="document"
+          placeholder="Document Number"
+          required
+        />
+      </div>
+      <div class="form-group">
+        <input
+          type="password"
+          [(ngModel)]="documentPassword"
+          name="password"
+          placeholder="Password"
+          required
+        />
+      </div>
+      <button type="submit" [disabled]="!loginForm.form.valid || loading()">
+        {{ loading() ? 'Logging in...' : 'Login' }}
+      </button>
+    </form>
+    }
+
+    <!-- Email Login (v2) -->
+    @if (selectedLoginType() === 'email') {
+    <form (ngSubmit)="onLogin()" #emailForm="ngForm">
+      <h3>Login with Email</h3>
+      <div class="form-group">
+        <input type="email" [(ngModel)]="emailAddress" name="email" placeholder="Email" required />
+      </div>
+      <div class="form-group">
+        <input
+          type="password"
+          [(ngModel)]="emailPassword"
+          name="password"
+          placeholder="Password"
+          required
+        />
+      </div>
+      <button type="submit" [disabled]="!emailForm.form.valid || loading()">
+        {{ loading() ? 'Logging in...' : 'Login' }}
+      </button>
+    </form>
+    }
+
+    <!-- OTP Login (v3) -->
+    @if (selectedLoginType() === 'otp') {
+    <div>
+      <h3>Login with OTP</h3>
+
+      <!-- Send OTP -->
+      @if (!otpSent()) {
+      <form (ngSubmit)="sendOtp()" #otpRequestForm="ngForm">
+        <div class="form-group">
+          <input
+            type="email"
+            [(ngModel)]="otpEmailAddress"
+            name="otpEmail"
+            placeholder="Email for OTP"
+            required
+          />
+        </div>
+        <button type="submit" [disabled]="!otpRequestForm.form.valid || loading()">
+          {{ loading() ? 'Sending OTP...' : 'Send OTP' }}
+        </button>
+      </form>
+      }
+
+      <!-- Enter OTP -->
+      @if (otpSent()) {
+      <form (ngSubmit)="onLogin()" #otpForm="ngForm">
+        <div class="form-group">
+          <input type="text" [(ngModel)]="otpCode" name="otp" placeholder="Enter OTP" required />
+        </div>
+        <button type="submit" [disabled]="!otpForm.form.valid || loading()">
+          {{ loading() ? 'Verifying...' : 'Verify OTP' }}
+        </button>
+        <button type="button" (click)="resetOtp()">Send New OTP</button>
+      </form>
+      }
+    </div>
+    }
+  </div>
+
+  <!-- Messages -->
+  <div class="messages">
+    @if (errorMessage()) {
+    <div class="error">{{ errorMessage() }}</div>
+    } @if (successMessage()) {
+    <div class="success">{{ successMessage() }}</div>
+    }
+  </div>
+</div>

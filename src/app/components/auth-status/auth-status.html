@@ -1,0 +1,25 @@
+<div class="auth-status">
+  <h3>Authentication Status</h3>
+  <div class="status-info">
+    <p><strong>Authenticated:</strong> {{ isAuthenticated() ? 'Yes' : 'No' }}</p>
+    <p><strong>Has Token:</strong> {{ hasValidToken() ? 'Yes' : 'No' }}</p>
+    <p><strong>Token:</strong> {{ displayToken() }}</p>
+  </div>
+
+  <div class="actions">
+    @if (!isAuthenticated()) {
+    <button (click)="navigateToLogin()">Go to Login</button>
+    } @if (isAuthenticated()) {
+    <button (click)="procesoRestringidoV1()">🚀 Proceso Restringido V1</button>
+    <button (click)="procesoRestringidoV2()">🚀 Proceso Restringido V2</button>
+    <button (click)="validateToken()">Validate Token</button>
+    <button (click)="logout()">Logout</button>
+    }
+  </div>
+
+  @if (validationMessage()) {
+  <div class="validation-result">
+    {{ validationMessage() }}
+  </div>
+  }
+</div>

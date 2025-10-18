@@ -25,4 +25,22 @@ export interface LoginResponse {
 export interface ValidateResponse {
   valid?: boolean;
   message?: string;
+  paiload?: Paiload;
+}
+
+export interface Paiload {
+  sub: string;
+  name: string;
+  iat: number;
+  exp: number;
+}
+
+export interface ErrorResponse {
+  message?: string;
+  statusCode?: number;
+}
+
+export interface Response {
+  message?: string;
+  version?: string;
 }

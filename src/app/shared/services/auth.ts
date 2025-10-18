@@ -10,7 +10,7 @@ import {
   LoginResponse,
   ValidateResponse,
   LoginType,
-} from '../interfaces/login';
+} from '@shared/interfaces/login';
 import { ApiConstants } from '@shared/constants';
 
 @Injectable({
@@ -93,9 +93,29 @@ export class AuthService {
    * Validate token (v2) - sends token in Authorization header
    */
   validateTokenV2(): Observable<ValidateResponse> {
+    const headers = this.getAuthHeaders();
     return this.http.post<ValidateResponse>(
       `${ApiConstants.BASE_URL}${ApiConstants.VALIDATE_V2}`,
-      {}
+      {},
+      { headers }
+    );
+  }
+
+  procesoRestrigidoV1(): Observable<any> {
+    const headers = this.getAuthHeaders();
+    return this.http.post<any>(
+      `${ApiConstants.BASE_URL}${ApiConstants.PROCESS_RESTRICTED_V1}`,
+      {},
+      { headers }
+    );
+  }
+
+  procesoRestrigidoV2(): Observable<any> {
+    const headers = this.getAuthHeaders();
+    return this.http.post<any>(
+      `${ApiConstants.BASE_URL}${ApiConstants.PROCESS_RESTRICTED_V2}`,
+      {},
+      { headers }
     );
   }
 

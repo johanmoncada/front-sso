@@ -1,7 +1,7 @@
 import { Routes } from '@angular/router';
-import { LoginComponent } from './components/login.component';
-import { AuthStatusComponent } from './components/auth-status.component';
-import { authGuard } from './shared/guards/auth.guard';
+import { Login } from '@components/login/login';
+import { AuthStatus } from '@components/auth-status/auth-status';
+import { authGuard } from '@shared/guards/auth.guard';
 
 export const routes: Routes = [
   {
@@ -11,12 +11,12 @@ export const routes: Routes = [
   },
   {
     path: 'login',
-    component: LoginComponent,
+    component: Login,
     title: 'Login - Multi-SSO',
   },
   {
     path: 'dashboard',
-    component: AuthStatusComponent,
+    component: AuthStatus,
     canActivate: [authGuard],
     title: 'Dashboard - Multi-SSO',
   },

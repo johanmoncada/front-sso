@@ -21,6 +21,6 @@ export class ApiConstants {
   static readonly NOTIFICATIONS_SEND = '/api/notifications/send';
 
   // Process endpoints
-  static readonly PROCESS_START = '/api/process/start';
-  static readonly PROCESS_STATUS = '/api/process/status';
+  static readonly PROCESS_RESTRICTED_V1 = '/v1/api/process/restricted';
+  static readonly PROCESS_RESTRICTED_V2 = '/v2/api/process/restricted';
 }
