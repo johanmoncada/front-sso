@@ -1,5 +1,7 @@
 # EDS Front SSO (Angular 20)
 
+## Johan Moncada - Mauricio Rayo
+
 Aplicación Angular para autenticación multi-login (documento, email y OTP) con señales (signals), guardas funcionales, interceptores y proxy a un backend Node/Nest en http://localhost:3000.
 
 ## Requisitos
