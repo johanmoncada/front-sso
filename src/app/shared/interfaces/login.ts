@@ -36,8 +36,12 @@ export interface Paiload {
 }
 
 export interface ErrorResponse {
-  message?: string;
-  statusCode?: number;
+  error?: {
+    message?: string;
+    error?: string;
+    statusCode?: number;
+  };
+  statusText: string;
 }
 
 export interface Response {

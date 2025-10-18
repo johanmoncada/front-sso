@@ -39,11 +39,11 @@ export class AuthStatus {
     this.authService.validateTokenV2().subscribe({
       next: (response: ValidateResponse) => {
         console.log('Validation response:', response);
-        this.validationMessage.set(response.valid ? 'Token is valid' : 'Token is invalid');
+        this.validationMessage.set(response.valid ? 'Token es Valido' : 'Token es invalido');
       },
-      error: (error) => {
-        this.validationMessage.set('Token validation failed');
-        console.error('Validation error:', error);
+      error: (error: ErrorResponse) => {
+        this.validationMessage.set('Token validation failed: ' + error.error?.message);
+        console.error('Validation error:', error.error);
       },
     });
   }
@@ -55,8 +55,8 @@ export class AuthStatus {
         this.validationMessage.set('Proceso restringido V1 ejecutado correctamente');
       },
       error: (error: ErrorResponse) => {
-        this.validationMessage.set(`Restricted process V1: ${error.message}`);
-        console.error('Restricted process V1 error:', error.message);
+        this.validationMessage.set(`Restricted process V1: ${error.error?.message}`);
+        console.error('Restricted process V1 error:', error.error);
       },
     });
   }
@@ -68,8 +68,8 @@ export class AuthStatus {
         this.validationMessage.set('Proceso restringido V2 ejecutado correctamente');
       },
       error: (error: ErrorResponse) => {
-        this.validationMessage.set(`Restricted process V2: ${error.message}`);
-        console.error('Restricted process V2 error:', error.message);
+        this.validationMessage.set(`Restricted process V2: ${error.error?.message}`);
+        console.error('Restricted process V2 error:', error.error);
       },
     });
   }
