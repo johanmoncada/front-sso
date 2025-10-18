@@ -1,7 +1,7 @@
 import { inject, Injectable, signal, computed } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
-import { Observable } from 'rxjs';
-import { tap } from 'rxjs/operators';
+import { HttpClient, HttpErrorResponse } from '@angular/common/http';
+import { Observable, throwError } from 'rxjs';
+import { catchError, tap } from 'rxjs/operators';
 import {
   LoginRequest,
   LoginV1Request,
@@ -39,7 +39,10 @@ export class AuthService {
     console.log('Attempting login with credentials:', credentials);
     return this.http
       .post<LoginResponse>(`${ApiConstants.BASE_URL}${ApiConstants.LOGIN_V1}`, credentials)
-      .pipe(tap((response) => this.handleLoginSuccess(response)));
+      .pipe(
+        tap((response) => this.handleLoginSuccess(response)),
+        catchError((error) => this.handleError(error))
+      );
   }
 
   /**
@@ -48,7 +51,10 @@ export class AuthService {
   loginV2(credentials: LoginV2Request): Observable<LoginResponse> {
     return this.http
       .post<LoginResponse>(`${ApiConstants.BASE_URL}${ApiConstants.LOGIN_V2}`, credentials)
-      .pipe(tap((response) => this.handleLoginSuccess(response)));
+      .pipe(
+        tap((response) => this.handleLoginSuccess(response)),
+        catchError((error) => this.handleError(error))
+      );
   }
 
   /**
@@ -57,7 +63,10 @@ export class AuthService {
   loginV3(credentials: LoginV3Request): Observable<LoginResponse> {
     return this.http
       .post<LoginResponse>(`${ApiConstants.BASE_URL}${ApiConstants.LOGIN_V3}`, credentials)
-      .pipe(tap((response) => this.handleLoginSuccess(response)));
+      .pipe(
+        tap((response) => this.handleLoginSuccess(response)),
+        catchError((error) => this.handleError(error))
+      );
   }
 
   /**
@@ -84,9 +93,11 @@ export class AuthService {
     if (!token) {
       throw new Error('No token available');
     }
-    return this.http.post<ValidateResponse>(`${ApiConstants.BASE_URL}${ApiConstants.VALIDATE_V1}`, {
-      token,
-    });
+    return this.http
+      .post<ValidateResponse>(`${ApiConstants.BASE_URL}${ApiConstants.VALIDATE_V1}`, {
+        token,
+      })
+      .pipe(catchError((error) => this.handleError(error)));
   }
 
   /**
@@ -94,39 +105,39 @@ export class AuthService {
    */
   validateTokenV2(): Observable<ValidateResponse> {
     const headers = this.getAuthHeaders();
-    return this.http.post<ValidateResponse>(
-      `${ApiConstants.BASE_URL}${ApiConstants.VALIDATE_V2}`,
-      {},
-      { headers }
-    );
+    return this.http
+      .post<ValidateResponse>(
+        `${ApiConstants.BASE_URL}${ApiConstants.VALIDATE_V2}`,
+        {},
+        { headers }
+      )
+      .pipe(catchError((error) => this.handleError(error)));
   }
 
   procesoRestrigidoV1(): Observable<any> {
     const headers = this.getAuthHeaders();
-    return this.http.post<any>(
-      `${ApiConstants.BASE_URL}${ApiConstants.PROCESS_RESTRICTED_V1}`,
-      {},
-      { headers }
-    );
+    return this.http
+      .post<any>(`${ApiConstants.BASE_URL}${ApiConstants.PROCESS_RESTRICTED_V1}`, {}, { headers })
+      .pipe(catchError((error) => this.handleError(error)));
   }
 
   procesoRestrigidoV2(): Observable<any> {
     const headers = this.getAuthHeaders();
-    return this.http.post<any>(
-      `${ApiConstants.BASE_URL}${ApiConstants.PROCESS_RESTRICTED_V2}`,
-      {},
-      { headers }
-    );
+    return this.http
+      .post<any>(`${ApiConstants.BASE_URL}${ApiConstants.PROCESS_RESTRICTED_V2}`, {}, { headers })
+      .pipe(catchError((error) => this.handleError(error)));
   }
 
   /**
    * Send OTP via email
    */
   sendOtpEmail(email: string): Observable<any> {
-    return this.http.post(`${ApiConstants.BASE_URL}${ApiConstants.SEND_OTP}`, {
-      channel: 'email',
-      email: email,
-    });
+    return this.http
+      .post(`${ApiConstants.BASE_URL}${ApiConstants.SEND_OTP}`, {
+        channel: 'email',
+        email: email,
+      })
+      .pipe(catchError((error) => this.handleError(error)));
   }
 
   /**
@@ -148,9 +159,7 @@ export class AuthService {
    * Logout user
    */
   logout(): void {
-    localStorage.removeItem(this.TOKEN_KEY);
-    this._token.set(null);
-    this._isAuthenticated.set(false);
+    this.clearAuth();
   }
 
   /**
@@ -192,5 +201,19 @@ export class AuthService {
   getAuthHeaders(): { [key: string]: string } {
     const token = this.getToken();
     return token ? { Authorization: `Bearer ${token}` } : {};
+  }
+
+  private clearAuth(): void {
+    localStorage.removeItem(this.TOKEN_KEY);
+    this._token.set(null);
+    this._isAuthenticated.set(false);
+  }
+
+  private handleError(error: HttpErrorResponse): Observable<never> {
+    if (error.status === 401) {
+      console.warn('Token expirado o inválido. Limpiando autenticación...');
+      this.clearAuth();
+    }
+    return throwError(() => error);
   }
 }
