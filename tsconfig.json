@@ -14,12 +14,12 @@
     "importHelpers": true,
     "target": "ES2022",
     "module": "preserve",
-    "baseUrl": ".",
     "paths": {
-    "@shared/*": ["src/app/shared/*"],
-    "@features/*": ["src/app/features/*"],
-    "@components/*": ["src/app/components/*"],
-    "@core/*": ["src/app/core/*"]
+      "*": ["./src/*"],
+    "@shared/*": ["./src/app/shared/*"],
+    "@features/*": ["./src/app/features/*"],
+    "@components/*": ["./src/app/components/*"],
+    "@core/*": ["./src/app/core/*"]
     }
   },
   "angularCompilerOptions": {
